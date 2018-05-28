@@ -5,8 +5,8 @@ $(document).ready(function () {
     var rating = "G";
     var enteredSearch = "";
     var q = "";
-    var queryUrl = "https://api.giphy.com/v1/gifs/search?&" + api + q + "&limit=15&offset=0&" + rating + "&lang=en";
-
+    var queryUrl = "https://api.giphy.com/v1/gifs/search?&" + api + q + "&limit=12&" + offset + rating + "&lang=en";
+    var offset = Math.floor((Math.random() * 10) * 10);
 
     $.ajax({
         url: queryUrl,
@@ -39,7 +39,8 @@ $(document).ready(function () {
         event.preventDefault();
         q = $(this).attr("data-name");
         console.log(q);
-        var queryUrl = "https://api.giphy.com/v1/gifs/search?&" + api + q + "&limit=10&offset=0&" + rating + "&lang=en";
+        queryUrl = "https://api.giphy.com/v1/gifs/search?&" + api + q + "&limit=12&" + offset + rating + "&lang=en";
+
 
         getGifs();
 
@@ -50,13 +51,38 @@ $(document).ready(function () {
             }).then(function (response) {
                 console.log(response);
 
+
                 for (var i = 0; i < response.data.length; i++) {
 
                     var showImage = $("<img>");
-                    showImage.attr("src", response.data[i].images.original.url);
+                    showImage.addClass("gif");
+                    showImage.attr("src", response.data[i].images.fixed_height.url);
+
+                    // showImage.attr("src", response.data[i].images.fixed_height_still.url);
+                    //need both things to change image from still to animate
+
                     $("#gifs-appear-here").prepend(showImage);
                     console.log(showImage);
 
+                    var animate = $(this).attr("data-animate");
+                    var animate = $(this).attr("data-still");
+
+
+                    $(".gif").on("click", function (event) {
+                        debugger;//shows events triggered to determine selected items
+
+                        var state = $(this).attr("data-state");
+                        console.log(this);
+
+                        if (state === "still") {
+                            $(this).attr("src", $(this).attr("data-animate"));
+                            $(this).attr("data-state", "animate");
+                        } else {
+                            $(this).attr("src", $(this).attr("data-still"));
+                            $(this).attr("data-state", "still");
+                        }
+
+                    });
 
                 }
 
@@ -67,57 +93,29 @@ $(document).ready(function () {
     });
 
     //Add new searches to array//
-    $(".btn").on("click", function () {
+    $(".btn").on("click", function (event) {
         event.preventDefault();
         var enteredSearch = $("#enteredSearch").val().trim();
+
+
+
         if (enteredSearch === "") {
             return;
-        } else {
-
-            console.log(enteredSearch);
-
+        } else if (showsArray.indexOf(enteredSearch) == -1) {
             showsArray.push(enteredSearch);
-            // showsArray.splice(0, 1, enteredSearch);
-            console.log(showsArray);
-            renderButtons();
-            $("#enteredSearch").val("")
-
         }
+
+        console.log(enteredSearch);
+        // showsArray.push(enteredSearch);
+        // showsArray.splice(0, 1, enteredSearch);
+        console.log(showsArray);
+
+        renderButtons();
+        $("#enteredSearch").val("")//clears out the search box
 
     });
 
+    //function associated with starting and stopping images//
+
+
 });
-    // showsArray.splice(index, 1); //heard I may need this?? Don't know why??
-
-
-
-
-
-
-//possible good code for starting and stopping images//
-// if (state === "still") {
-//     $(this).attr("src", $(this).attr("data-animate"));
-//     $(this).attr("data-state", "animate");
-//   } else {
-//     $(this).attr("src", $(this).attr("data-still"));
-//     $(this).attr("data-state", "still");
-//   }
-// });
-
-
-//function associated with starting and stopping images//
-// $(".gif").on("click", function () {
-
-//     var state = $(this).attr("data-state");
-//     console.log(this);
-
-//     var still = $(this).attr("data-still");
-//     var animate = $(this).attr("data-animate");
-//     if (state === "still") {
-//         $(this).attr("src", $(this).attr("data-animate"));
-//         $(this).attr("data-state", "animate");
-//     } else {
-//         $(this).attr("src", $(this).attr("data-still"));
-//         $(this).attr("data-state", "still");
-//     }
-// });
