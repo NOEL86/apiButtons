@@ -1,74 +1,100 @@
-var showsArray = ['Game of Thrones', 'Outlander', 'Gilmore Girls', 'The Big Bang Theory', 'Friends', 'Smallville'];
-var API = "DPVJwGqSewzajKIgDz9FLExLVWSPBrtL";
-var rating = "G";
-var numberRequest = 10;
-var enteredSearch = "";
-var arrayItem = [];
-
-
 
 $(document).ready(function () {
+    var showsArray = ['Game of Thrones', 'Outlander', 'Gilmore Girls', 'The Big Bang Theory', 'Friends', 'Smallville'];
+    var api = "api_key=rK3wU1cHmuBEy5fHHQ9zvm9qbyfNd45i&q=";
+    var rating = "G";
+    var enteredSearch = "";
+    var q = "";
+    var queryUrl = "https://api.giphy.com/v1/gifs/search?&" + api + q + "&limit=15&offset=0&" + rating + "&lang=en";
 
-    for (var i = 0; i < showsArray.length; i++) {
-        var search = $("<button>" + showsArray[i] + "</button>");
-        search.appendTo("#buttons");
-
-    }
-
-    // var queryUrl = "https://api.giphy.com/v1/gifs/search?api_key=DPVJwGqSewzajKIgDz9FLExLVWSPBrtL&q=" + enteredSearch + "& limit=25 & offset=0 & rating=G & lang=en";
-    var queryUrl = "https://api.giphy.com/v1/gifs/search?api_key=DPVJwGqSewzajKIgDz9FLExLVWSPBrtL&q=Game+Of+Thrones& limit=25 & offset=0 & rating=G & lang=en";
 
     $.ajax({
         url: queryUrl,
         method: "GET",
     }).then(function (response) {
         console.log(response);
-
-        $(".btn").on("click", function () {
-            event.preventDefault();
-
-            var enteredSearch = $("#enteredSearch").val().trim();
-            $("enteredSearch").val(" ");
-            console.log(enteredSearch);
-
-            showsArray.push(enteredSearch);
-            console.log(showsArray);
+    });
 
 
-            // showsArray.splice(index, 1);
+    //create new buttons for shows to search//
+    function renderButtons() {
+        $("#buttons").empty();
 
-            // var responseGif = response.data.images;
-            // var showImage = $("<img>");
-            // showImage.attr("src", responseGif);
+        for (var i = 0; i < showsArray.length; i++) {
+            var newButton = $("<button>" + showsArray[i] + "</button>");
+            newButton.appendTo("#buttons");
+            newButton.addClass("gifSelected")
+            newButton.attr("data-name", showsArray[i]);
+            newButton.text(showsArray[i]);
+            $("#buttons").append(newButton);
 
-            // $("#gifs-appear-here").append(showImage);
+            //make the value of the button a variable 
+        }
+    }
+
+    renderButtons();
+
+    //search for the entered button gifs and have the gifs appear//
+    $(".gifSelected").on("click", function () {
+        event.preventDefault();
+        q = $(this).attr("data-name");
+        console.log(q);
+        var queryUrl = "https://api.giphy.com/v1/gifs/search?&" + api + q + "&limit=10&offset=0&" + rating + "&lang=en";
+
+        getGifs();
+
+        function getGifs() {
+            $.ajax({
+                url: queryUrl,
+                method: "GET",
+            }).then(function (response) {
+                console.log(response);
+
+                for (var i = 0; i < response.data.length; i++) {
+
+                    var showImage = $("<img>");
+                    showImage.attr("src", response.data[i].images.original.url);
+                    $("#gifs-appear-here").prepend(showImage);
+                    console.log(showImage);
 
 
+                }
 
-
-
-
-
-        });
-
-
-
+            })
+        }
 
 
     });
 
+    //Add new searches to array//
+    $(".btn").on("click", function () {
+        event.preventDefault();
+        var enteredSearch = $("#enteredSearch").val().trim();
+        if (enteredSearch === "") {
+            return;
+        } else {
 
+            console.log(enteredSearch);
 
+            showsArray.push(enteredSearch);
+            // showsArray.splice(0, 1, enteredSearch);
+            console.log(showsArray);
+            renderButtons();
+            $("#enteredSearch").val("")
+
+        }
+
+    });
 
 });
+    // showsArray.splice(index, 1); //heard I may need this?? Don't know why??
 
 
 
 
 
 
-
-
+//possible good code for starting and stopping images//
 // if (state === "still") {
 //     $(this).attr("src", $(this).attr("data-animate"));
 //     $(this).attr("data-state", "animate");
@@ -79,7 +105,7 @@ $(document).ready(function () {
 // });
 
 
-
+//function associated with starting and stopping images//
 // $(".gif").on("click", function () {
 
 //     var state = $(this).attr("data-state");

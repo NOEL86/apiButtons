@@ -1,5 +1,24 @@
 body {
-    background-color: lightgray;
+    background-color: lightpink;
+}
+
+.container {
+    border: 2px solid black;
+}
+
+#gifs-appear-here {
+    
+}
+h1 {
+    font-family: 'Indie Flower', cursive;
+    font-size: 50px;
+    font-weight: 500;
+    text-align: center;
+    color: red;
+}
+#buttons {
+    font-family: 'Indie Flower', cursive;
+    font-size: 20px;
 }
 
 .btn {
@@ -7,6 +26,6 @@ body {
     text-align: right;
 }
 
-.btn:hover{
+.btn:hover {
     color: red;
 }
