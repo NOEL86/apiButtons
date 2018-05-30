@@ -56,20 +56,18 @@ $(document).ready(function () {
 
                     var showImage = $("<img>");
                     showImage.addClass("gif");
-                    showImage.attr("src", response.data[i].images.fixed_height.url);
+                    showImage.attr("src", response.data[i].images.fixed_height.url, response.data[i].images.fixed_height_still.url);
 
-                    // showImage.attr("src", response.data[i].images.fixed_height_still.url);
                     //need both things to change image from still to animate
 
                     $("#gifs-appear-here").prepend(showImage);
                     console.log(showImage);
 
-                    var animate = $(this).attr("data-animate");
-                    var animate = $(this).attr("data-still");
-
-
                     $(".gif").on("click", function (event) {
                         debugger;//shows events triggered to determine selected items
+
+                        var animate = $(".gif").attr("data-animate");
+                        // var still = $(".gif").attr("data-still");
 
                         var state = $(this).attr("data-state");
                         console.log(this);
